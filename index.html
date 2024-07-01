@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chatbot</title>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        #chatbox { height: 300px; overflow-y: scroll; }
+        .user, .bot { margin: 10px; padding: 10px; border-radius: 5px; }
+        .user { background-color: #e1ffc7; text-align: right; }
+        .bot { background-color: #ffecd9; text-align: left; }
+    </style>
+</head>
+<body>
+    <h1>Welcome to Company Name Chatbot</h1>
+    <div id="chatbox"></div>
+    <input type="text" id="userInput" placeholder="Type your message here...">
+    <button onclick="sendMessage()">Send</button>
+    <script>
+        function sendMessage() {
+            var userInput = document.getElementById("userInput").value;
+            var chatbox = document.getElementById("chatbox");
+            
+            var userDiv = document.createElement("div");
+            userDiv.className = "user";
+            userDiv.innerHTML = userInput;
+            chatbox.appendChild(userDiv);
+
+            fetch("/get", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded"
+                },
+                body: "msg=" + userInput
+            }).then(response => response.text()).then(botResponse => {
+                var botDiv = document.createElement("div");
+                botDiv.className = "bot";
+                botDiv.innerHTML = botResponse;
+                chatbox.appendChild(botDiv);
+                document.getElementById("userInput").value = "";
+                chatbox.scrollTop = chatbox.scrollHeight;
+            });
+        }
+    </script>
+</body>
+</html>
