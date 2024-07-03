@@ -1,0 +1,35 @@
+{
+    "intents": [
+      {
+        "tag": "greeting",
+        "patterns": ["Hi", "Hello", "How are you?", "Good morning", "Good evening"],
+        "responses": ["Hello! How can I assist you today?", "Hi there! What can I do for you?", "Greetings! How can I help?"]
+      },
+      {
+        "tag": "goodbye",
+        "patterns": ["Bye", "See you later", "Goodbye"],
+        "responses": ["Goodbye! Have a great day!", "See you later! Enjoy your meal!", "Goodbye!"]
+      },
+      {
+        "tag": "thanks",
+        "patterns": ["Thanks", "Thank you", "That's helpful"],
+        "responses": ["You're welcome!", "Happy to help!", "Anytime!"]
+      },
+      {
+        "tag": "order_food",
+        "patterns": ["I want to order food", "Order food", "Can I get some food?", "I need to order food"],
+        "responses": ["Sure, what would you like to order?", "What type of food are you in the mood for?", "Please tell me your order."]
+      },
+      {
+        "tag": "about_us",
+        "patterns": ["tell me about youself", "what does the company do", "tell me about the comapny", "what does tenet networks do","what is this company about"],
+        "responses": ["Tenet network : visit the link , 123 Cafe. Would you like to order from any of these?", "I recommend trying out: ABC Restaurant, XYZ Diner, 123 Cafe. What's your choice?", "These restaurants are highly rated: ABC Restaurant, XYZ Diner, 123 Cafe. Would you like to order from any of these?"]
+      },
+      {
+        "tag": "product_details",
+        "patterns": ["can you tell me about product xyz?", "What all product are available ?", "tell me about product abc", ""],
+        "responses": ["sure let me get details for you"]
+      }
+    ]
+  }
+  
