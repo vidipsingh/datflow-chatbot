@@ -1,3 +1,4 @@
+import sqlite3
 from flask import Flask, request, jsonify, send_from_directory
 import numpy as np
 import keras
@@ -6,7 +7,6 @@ import json
 import nltk
 from nltk.stem import WordNetLemmatizer
 import random
-import sqlite3
 
 app = Flask(__name__)
 
@@ -20,6 +20,12 @@ classes = pickle.load(open('classes.pkl', 'rb'))
 # Load intents
 with open('intents.json') as file:
     intents = json.load(file)
+
+# Connect to the SQLite database
+def get_db_connection():
+    conn = sqlite3.connect('chatbot_database.db')
+    conn.row_factory = sqlite3.Row
+    return conn
 
 def clean_up_sentence(sentence):
     sentence_words = nltk.word_tokenize(sentence)
@@ -47,7 +53,7 @@ def predict_class(sentence, model):
     return return_list
 
 def get_product_details(product_name):
-    conn = sqlite3.connect('chatbot.db')
+    conn = get_db_connection()
     cursor = conn.cursor()
     cursor.execute('SELECT description, price FROM products WHERE name=?', (product_name,))
     result = cursor.fetchone()
@@ -66,7 +72,6 @@ def get_response(ints, intents_json):
             if tag == 'order_status':
                 result = "Your order is being prepared and will be delivered in approximately 30 minutes."
             elif tag == 'product_details':
-                # Extract the product name from the user's message
                 for pattern in i['patterns']:
                     if pattern.lower() in message.lower():
                         product_name = pattern.split()[-1]
@@ -85,6 +90,14 @@ def chat():
     message = request.json['message']
     ints = predict_class(message, model)
     res = get_response(ints, intents)
+    
+    # Log user interaction to the database
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute('INSERT INTO interactions (message, response) VALUES (?, ?)', (message, res))
+    conn.commit()
+    conn.close()
+    
     return jsonify({"response": res})
 
 @app.route('/')
@@ -93,4 +106,3 @@ def index():
 
 if __name__ == "__main__":
     app.run(debug=True)
-

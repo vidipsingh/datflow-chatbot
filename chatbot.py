@@ -1,5 +1,3 @@
-    # swiggy bot
-
 import nltk
 from nltk.stem import WordNetLemmatizer
 import json
@@ -10,12 +8,32 @@ from keras.models import Sequential
 from keras.layers import Dense, Dropout
 nltk.download('punkt')
 nltk.download('wordnet')
+import sqlite3
 
 lemmatizer = WordNetLemmatizer()
 
-# Load intents file
+# Load intents file and add new interactions
 with open('intents.json') as file:
     intents = json.load(file)
+
+# Connect to the SQLite database
+def get_db_connection():
+    conn = sqlite3.connect('chatbot_database.db')
+    conn.row_factory = sqlite3.Row
+    return conn
+
+conn = get_db_connection()
+cursor = conn.cursor()
+cursor.execute('SELECT message, response FROM interactions')
+interactions = cursor.fetchall()
+conn.close()
+
+for interaction in interactions:
+    intents['intents'].append({
+        'tag': 'user_interaction',
+        'patterns': [interaction['message']],
+        'responses': [interaction['response']]
+    })
 
 words = []
 classes = []
@@ -51,10 +69,10 @@ for doc in documents:
     training.append([bag, output_row])
 
 random.shuffle(training)
-training = np.array(training, dtype=object)  # Use dtype=object to handle varying lengths
+training = np.array(training, dtype=object)
 
-train_x = np.array(list(training[:, 0]))  # Extract bags of words into train_x
-train_y = np.array(list(training[:, 1]))  # Extract output rows into train_y
+train_x = np.array(list(training[:, 0]))
+train_y = np.array(list(training[:, 1]))
 
 model = Sequential()
 model.add(Dense(128, input_shape=(len(train_x[0]),), activation='relu'))
@@ -70,6 +88,3 @@ model.save('chatbot_model.h5')
 
 pickle.dump(words, open('words.pkl', 'wb'))
 pickle.dump(classes, open('classes.pkl', 'wb'))
-
-
-

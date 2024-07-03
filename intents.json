@@ -26,7 +26,7 @@
         "responses": ["Tenet network : visit the link , 123 Cafe. Would you like to order from any of these?", "I recommend trying out: ABC Restaurant, XYZ Diner, 123 Cafe. What's your choice?", "These restaurants are highly rated: ABC Restaurant, XYZ Diner, 123 Cafe. Would you like to order from any of these?"]
       },
       {
-        "tag": "product_details",
+        "tag": "product_name",
         "patterns": ["can you tell me about product xyz?", "What all product are available ?", "tell me about product abc", ""],
         "responses": ["sure let me get details for you"]
       }
